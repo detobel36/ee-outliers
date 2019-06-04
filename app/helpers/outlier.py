@@ -12,14 +12,33 @@ class Outlier:
         self.outlier_dict["summary"] = textwrap.fill(summary, width=150)  # hard-wrap the length of a summary line to 300 characters to make it easier to visualize
 
     def is_whitelisted(self, additional_dict_values_to_check=None):
+
         # Check if value is whitelisted as literal
-        for (_, each_whitelist_val) in settings.config.items("whitelist_literals"):
-            if self.matches_specific_whitelist_item(each_whitelist_val, "literal", additional_dict_values_to_check):
+        for (_, each_whitelist_line) in settings.config.items("whitelist_literals"):
+            is_whitelisted_literal = False
+
+            for each_whitelist_item in [x.strip() for x in each_whitelist_line.split(',')]:
+                if self.matches_specific_whitelist_item(each_whitelist_item, "literal", additional_dict_values_to_check):
+                    is_whitelisted_literal = True
+                else:
+                    is_whitelisted_literal = False
+                    break
+
+            if is_whitelisted_literal:
                 return True
 
         # Check if value is whitelisted as regexp
-        for (_, each_whitelist_val) in settings.config.items("whitelist_regexps"):
-            if self.matches_specific_whitelist_item(each_whitelist_val, "regexp", additional_dict_values_to_check):
+        for (_, each_whitelist_line) in settings.config.items("whitelist_regexps"):
+            is_whitelisted_regexp = False
+
+            for each_whitelist_item in [x.strip() for x in each_whitelist_line.split(',')]:
+                if self.matches_specific_whitelist_item(each_whitelist_item, "regexp", additional_dict_values_to_check):
+                    is_whitelisted_regexp = True
+                else:
+                    is_whitelisted_regexp = False
+                    break
+
+            if is_whitelisted_regexp:
                 return True
 
         # If we reach this point, then there is no whitelist match
