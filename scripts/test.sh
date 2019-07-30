@@ -11,6 +11,7 @@ printInfos() {
     echo -e "  -m, --mypy\t\tCheck type of python code"
     echo -e "  -c, --clean\t\tClean (and remove) old docker images"
     echo -e "  -r, --run\t\tRun the ee-outlier (in interactive mode)"
+    exit
 }
 
 execTest=0
@@ -109,7 +110,7 @@ fi
 
 if (( $checkType == 1)); then
     echo "===== CHECK TYPE ====="
-    sudo docker run -v "$PWD/defaults:/mappedvolumes/config" --name test-outliners -i outliers-dev:latest mypy --strict /app/outliers.py
+    sudo docker run -v "$PWD/defaults:/mappedvolumes/config" --name test-outliners -i outliers-dev:latest mypy --ignore-missing-imports /app/outliers.py /app/analyzers/ml_models/word2vec.py /app/analyzers/templates/train_and_run.py
     echo "=============="
     echo "===== CLEAN ====="
     sudo docker rm test-outliners
